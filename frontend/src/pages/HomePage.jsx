@@ -1,17 +1,58 @@
-import React from 'react';
+import React, { useState, useEffect } from 'react';
 import { useNavigate } from 'react-router-dom';
 import './HomePage.css';
 
 const HomePage = () => {
   const navigate = useNavigate();
+  const [isAuthenticated, setIsAuthenticated] = useState(false);
+  const [userData, setUserData] = useState(null);
+
+  useEffect(() => {
+    // Перевірка, чи є автентифікація
+    const token = localStorage.getItem('authToken'); // приклад перевірки через токен
+    if (token) {
+      // Якщо токен є, то перевіряємо дані користувача через API
+      fetch('/api/current_user/', {
+        headers: {
+          'Authorization': `Bearer ${token}`,
+        }
+      })
+        .then(response => response.json())
+        .then(data => {
+          if (data.is_authenticated) {
+            setIsAuthenticated(true);
+            setUserData(data.user);  // Зберігаємо дані користувача
+          }
+        })
+        .catch(error => {
+          console.log('Error fetching user data:', error);
+        });
+    }
+  }, []);
 
   return (
     <div className="homepage">
       <header className="homepage-header">
         <h1 className="logo">Free2Go</h1>
         <div className="auth-buttons">
-          <button onClick={() => alert('Login functionality coming soon')}>Увійти</button>
-          <button onClick={() => alert('Register functionality coming soon')}>Зареєструватися</button>
+          {isAuthenticated ? (
+            <>
+              <div className="user-profile">
+                <img src={userData.avatar} alt="User Avatar" className="user-avatar" />
+                <span className="user-nickname">{userData.username}</span>
+              </div>
+              {userData.is_staff ? (
+                <button onClick={() => navigate('/accessibility-levels')}>Рівні доступності</button>
+              ) : (
+                <button onClick={() => navigate('/user-level')}>Характеристика рівня</button>
+              )}
+            </>
+          ) : (
+            <>
+              <button onClick={() => navigate('/login')}>Увійти</button>
+              <button onClick={() => navigate('/register')}>Зареєструватися</button>
+            </>
+          )}
         </div>
       </header>
 
