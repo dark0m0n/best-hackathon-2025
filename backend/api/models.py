@@ -9,6 +9,9 @@ class Location(models.Model):
     has_adapted_toilet = models.BooleanField(default=False)
     category = models.CharField(max_length=50)
 
+    def __str__(self):
+        return self.name
+
 class Review(models.Model):
     location = models.ForeignKey(Location, on_delete=models.CASCADE)
     rating = models.IntegerField()
