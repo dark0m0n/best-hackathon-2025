@@ -159,6 +159,47 @@ const MapPage = () => {
                   ))}
                 </ul>
               )}
+              <div className="filter-section">
+                <h3>Фільтри доступності</h3>
+                    <ul className="location-filter-list">
+                      <li>
+                        <label>
+                          <input
+                            className="location-filter"
+                            type="checkbox"
+                            name="has_ramp"
+                            checked={filters.has_ramp}
+                            onChange={(e) => setFilters({ ...filters, has_ramp: e.target.checked })}
+                          />
+                           Є пандус
+                        </label>
+                      </li>
+                      <li>
+                        <label>
+                          <input
+                             className="location-filter"
+                             type="checkbox"
+                              name="has_toilet"
+                              checked={filters.has_toilet}
+                              onChange={(e) => setFilters({ ...filters, has_toilet: e.target.checked })}
+                           />
+                             Адаптований туалет
+                          </label>
+                            </li>
+                            <li>
+                               <label>
+                                  <input
+                                    className="location-filter"
+                                    type="checkbox"
+                                     name="has_tactile"
+                                    checked={filters.has_tactile}
+                                     onChange={(e) => setFilters({ ...filters, has_tactile: e.target.checked })}
+                                  />
+                              Тактильна навігація
+                      </label>
+                   </li>
+               </ul>
+            </div>
             </div>
           </>
         ) : (
