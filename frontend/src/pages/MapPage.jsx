@@ -212,10 +212,9 @@ const MapPage = () => {
               <h2>Введіть маршрут</h2>
               <input
                 type="text"
-                placeholder="Звідки"
-                onFocus={() => setIsSearching(true)}
-                value={searchQuery}
-                onChange={(e) => setSearchQuery(e.target.value)}
+                 placeholder="Звідки"
+                 value={searchQuery}
+                 onChange={(e) => setSearchQuery(e.target.value)}
               />
               <input type="text" placeholder="Куди" />
             </div>
