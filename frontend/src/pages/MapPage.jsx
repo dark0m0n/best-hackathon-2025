@@ -35,6 +35,8 @@ const MapPage = () => {
   const [routeCoordinates, setRouteCoordinates] = useState([]);
   const [routeInfo, setRouteInfo] = useState(null);
   const [activeLocation, setActiveLocation] = useState(null);
+  const [showReviewForm, setShowReviewForm] = useState(false);
+const [reviewData, setReviewData] = useState({ rating: 0, comment: '' });
 
 
 
@@ -52,6 +54,46 @@ const MapPage = () => {
     setActiveLocation(loc);
   };
 
+  const handleReviewSubmit = async (e) => {
+    e.preventDefault();
+    try {
+      await axios.post('http://localhost:8000/api/reviews/', {
+        location: activeLocation.id,
+        rating: reviewData.rating,
+        comment: reviewData.comment,
+      });
+      alert('Відгук надіслано!');
+      setShowReviewForm(false);
+    } catch (error) {
+      console.error('Помилка при додаванні відгуку:', error);
+      alert('Щось пішло не так при додаванні відгуку.');
+    }
+    return (
+      <div>
+        {showReviewForm && (
+          <form onSubmit={handleReviewSubmit}>
+            <label>Оцінка (1-10):
+              <input
+                type="number"
+                value={reviewData.rating}
+                onChange={(e) => setReviewData({ ...reviewData, rating: e.target.value })}
+                min="1"
+                max="10"
+                required
+              />
+            </label>
+            <textarea
+              placeholder="Ваш коментар"
+              value={reviewData.comment}
+              onChange={(e) => setReviewData({ ...reviewData, comment: e.target.value })}
+            ></textarea>
+            <button type="submit">Залишити відгук</button>
+          </form>
+        )}
+      </div>
+    );
+  };
+  
   const handleMapClick = (e) => {
     const { lat, lng } = e.latlng;
     setNewPosition({ lat, lng });
@@ -115,10 +157,10 @@ const MapPage = () => {
     const map = useMapEvents({});
 
     useEffect(() => {
-      if (location) {
-        map.setView([location.latitude, location.longitude], 16);
-      }
-    }, [location]);
+  if (location) {
+    map.setView([location.latitude, location.longitude], 16);
+  }
+}, [location, map]);
 
     return null;
   };
@@ -187,7 +229,15 @@ const MapPage = () => {
         {activeLocation.has_toilet && <span className="tag">Адаптований туалет</span>}
         {activeLocation.has_tactile_elements && <span className="tag">Тактильна навігація</span>}
       </div>
-      {/* Тепер тут можна додавати блоки для рейтингу та відгуків */}
+      {/* Відображення середнього рейтингу */}
+      {activeLocation.average_rating && (
+        <div className="average-rating">
+          <strong>Рейтинг: {activeLocation.average_rating} / 10</strong>
+        </div>
+      )}
+
+      {/* Додатково можете додати можливість додавати відгук */}
+      <button onClick={() => setShowReviewForm(true)}>Залишити відгук</button>
     </div>
   ) : isSearching ? (
           <>
@@ -394,6 +444,19 @@ const MapPage = () => {
             </div>
             )}
 
+          {activeLocation && activeLocation.reviews && (
+  <div className="reviews-list">
+    <h3>Відгуки:</h3>
+    {activeLocation.reviews.map((review) => (
+      <div key={review.id} className="review-item">
+        <div><strong>{review.user.username}</strong></div>
+        <div>Оцінка: {review.rating} / 10</div>
+        <div>{review.comment}</div>
+        <div>Дата: {new Date(review.created_at).toLocaleDateString()}</div>
+      </div>
+    ))}
+  </div>
+)}
 
           {selectedLocation && !isSearching && (
             <Marker
