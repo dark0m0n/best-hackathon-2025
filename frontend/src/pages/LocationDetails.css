@@ -1,0 +1,67 @@
+.location-details {
+    padding: 20px;
+    max-width: 800px;
+    margin: 0 auto;
+}
+
+.location-details h2 {
+    margin-bottom: 10px;
+}
+
+.location-details ul {
+    list-style-type: none;
+    padding: 0;
+    margin-bottom: 20px;
+}
+
+.location-details ul li {
+    margin: 5px 0;
+}
+
+.mini-map {
+    margin: 20px 0;
+    border-radius: 10px;
+    overflow: hidden;
+}
+
+.review-btn {
+    padding: 10px 20px;
+    background-color: #3085d6;
+    color: white;
+    border: none;
+    border-radius: 8px;
+    cursor: pointer;
+}
+
+.review-form {
+    display: flex;
+    flex-direction: column;
+    gap: 10px;
+    max-width: 500px;
+}
+
+.review-form input,
+.review-form textarea {
+    padding: 10px;
+    font-size: 16px;
+    border: 1px solid #ccc;
+    border-radius: 8px;
+}
+
+.review-form button {
+    background-color: #4caf50;
+    color: white;
+    padding: 10px;
+    font-size: 16px;
+    border: none;
+    border-radius: 8px;
+    cursor: pointer;
+}
+
+.success-msg {
+    color: green;
+}
+
+.error-msg {
+    color: red;
+}

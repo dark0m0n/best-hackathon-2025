@@ -1,0 +1,74 @@
+.homepage {
+    display: flex;
+    flex-direction: column;
+    min-height: 100vh;
+    font-family: 'Segoe UI', sans-serif;
+}
+
+.homepage-header {
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    padding: 20px 40px;
+    background-color: #1e3a8a;
+    color: white;
+}
+
+.logo {
+    font-size: 1.8rem;
+}
+
+.auth-buttons button {
+    margin-left: 10px;
+    padding: 8px 16px;
+    background-color: white;
+    color: #1e3a8a;
+    border: none;
+    border-radius: 5px;
+    cursor: pointer;
+}
+
+.auth-buttons button:hover {
+    background-color: #cbd5e1;
+}
+
+.homepage-main {
+    flex: 1;
+    padding: 60px 40px;
+    text-align: center;
+    background-color: #f1f5f9;
+}
+
+.homepage-main h2 {
+    font-size: 2rem;
+    margin-bottom: 20px;
+}
+
+.homepage-main p {
+    font-size: 1.1rem;
+    margin-bottom: 40px;
+    max-width: 600px;
+    margin-left: auto;
+    margin-right: auto;
+}
+
+.map-button {
+    padding: 14px 28px;
+    font-size: 1rem;
+    background-color: #2563eb;
+    color: white;
+    border: none;
+    border-radius: 8px;
+    cursor: pointer;
+}
+
+.map-button:hover {
+    background-color: #1d4ed8;
+}
+
+.homepage-footer {
+    text-align: center;
+    padding: 20px;
+    background-color: #e2e8f0;
+    font-size: 0.9rem;
+}

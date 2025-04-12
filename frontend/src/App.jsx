@@ -1,12 +1,19 @@
+// src/App.jsx
 import { BrowserRouter as Router, Routes, Route } from 'react-router-dom';
-import MapView from './components/MapView';
+import HomePage from './pages/HomePage';
+import MapPage from './pages/MapPage';
+import LocationDetails from './pages/LocationDetails'; // 🆕
 
-export default function App() {
+function App() {
   return (
     <Router>
       <Routes>
-        <Route path="/" element={<MapView />} />
+        <Route path="/" element={<HomePage />} />
+        <Route path="/map" element={<MapPage />} />
+        <Route path="/location/:id" element={<LocationDetails />} /> {/* 🆕 */}
       </Routes>
     </Router>
   );
 }
+
+export default App;
