@@ -5,6 +5,8 @@ import 'leaflet/dist/leaflet.css';
 import axios from 'axios';
 import { useNavigate } from 'react-router-dom';
 import './MapPage.css';
+import { Polyline } from 'react-leaflet';
+
 
 const MapPage = () => {
   const [locations, setLocations] = useState([]);
@@ -28,6 +30,13 @@ const MapPage = () => {
   const [loading, setLoading] = useState(false);
   const [searchQuery, setSearchQuery] = useState('');
   const [isSearching, setIsSearching] = useState(false);
+  const [fromQuery, setFromQuery] = useState('');
+  const [toQuery, setToQuery] = useState('');
+  const [routeCoordinates, setRouteCoordinates] = useState([]);
+  const [routeInfo, setRouteInfo] = useState(null);
+  const [activeLocation, setActiveLocation] = useState(null);
+
+
 
   const navigate = useNavigate();
 
@@ -40,6 +49,7 @@ const MapPage = () => {
     setSelectedLocation(loc);
     setCenterLocation({ latitude: loc.latitude, longitude: loc.longitude });
     setIsSearching(false);
+    setActiveLocation(loc);
   };
 
   const handleMapClick = (e) => {
@@ -113,6 +123,32 @@ const MapPage = () => {
     return null;
   };
 
+  const handleBuildRoute = async () => {
+  if (!fromQuery || !toQuery) {
+    alert("Введіть обидві точки маршруту.");
+    return;
+  }
+
+  try {
+    const response = await axios.post('http://localhost:8000/api/route/', {
+      from: fromQuery,
+      to: toQuery,
+      filters: {
+        has_ramp: filters.has_ramp,
+        has_toilet: filters.has_toilet,
+        has_tactile: filters.has_tactile,
+      }
+    });
+    const routeCoords = response.data.coordinates; // очікується масив [ [lat, lng], [lat, lng], ... ]
+    setRouteCoordinates(routeCoords);
+    setRouteInfo(response.data.info);
+  } catch (error) {
+    console.error("Помилка при побудові маршруту:", error);
+    alert("Не вдалося побудувати маршрут.");
+  }
+};
+
+
   const LocationMarker = () => {
     useMapEvents({
       click: handleMapClick,
@@ -138,7 +174,22 @@ const MapPage = () => {
   return (
     <div className="map-page-container">
       <div className="sidebar">
-        {isSearching ? (
+        {activeLocation ? (
+    // Якщо вибрана локація, відображаємо новий сайдбар з деталями
+    <div className="detailed-location-sidebar">
+      <button onClick={() => setActiveLocation(null)} className="back-btn">
+        ← Назад
+      </button>
+      <h2>{activeLocation.name}</h2>
+      <p>{activeLocation.description}</p>
+      <div className="tags">
+        {activeLocation.has_ramp && <span className="tag">Пандус</span>}
+        {activeLocation.has_toilet && <span className="tag">Адаптований туалет</span>}
+        {activeLocation.has_tactile_elements && <span className="tag">Тактильна навігація</span>}
+      </div>
+      {/* Тепер тут можна додавати блоки для рейтингу та відгуків */}
+    </div>
+  ) : isSearching ? (
           <>
             <button className="back-btn" onClick={() => {
               setIsSearching(false);
@@ -211,12 +262,19 @@ const MapPage = () => {
             <div className="route-inputs">
               <h2>Введіть маршрут</h2>
               <input
-                type="text"
+                 type="text"
                  placeholder="Звідки"
-                 value={searchQuery}
-                 onChange={(e) => setSearchQuery(e.target.value)}
+                 value={fromQuery}
+                 onChange={(e) => setFromQuery(e.target.value)}
               />
-              <input type="text" placeholder="Куди" />
+              <input
+                type="text"
+                placeholder="Куди"
+                 value={toQuery}
+                 onChange={(e) => setToQuery(e.target.value)}
+              />
+              <button onClick={handleBuildRoute} className="build-route-btn">Побудувати маршрут</button>
+
             </div>
 
             <button className="add-btn" onClick={() => setShowAddForm(!showAddForm)}>
@@ -326,6 +384,16 @@ const MapPage = () => {
               </Popup>
             </Marker>
           ))}
+          {routeCoordinates.length > 0 && (
+          <Polyline positions={routeCoordinates} color="blue" weight={6} />
+          )}
+          {routeInfo && (
+            <div className="route-info-box">
+            <p>Відстань: {routeInfo.distance}</p>
+           <p>Час: {routeInfo.time}</p>
+            </div>
+            )}
+
 
           {selectedLocation && !isSearching && (
             <Marker
