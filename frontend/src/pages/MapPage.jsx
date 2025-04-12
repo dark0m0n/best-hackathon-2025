@@ -146,13 +146,13 @@ const MapPage = () => {
             }}>← Назад</button>
 
             <div className="search-results">
-              <h3>Результати пошуку:</h3>
+              <h3 className='Search-list-title'>Результати пошуку:</h3>
               {filteredLocations.length === 0 ? (
-                <p>Нічого не знайдено</p>
+                <p className='Search-list-item'>Нічого не знайдено</p>
               ) : (
-                <ul>
+                <ul className='Search-list-box'>
                   {filteredLocations.map((loc) => (
-                    <li key={loc.id} onClick={() => handleLocationClick(loc)}>
+                    <li key={loc.id} onClick={() => handleLocationClick(loc)} className='Search-list-item'>
                       <strong>{loc.name}</strong><br />
                       <small>{loc.description?.slice(0, 50)}...</small>
                     </li>
