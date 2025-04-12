@@ -1,26 +1,8 @@
 from django.contrib.gis.db import models
 from django.contrib.auth.models import AbstractUser, BaseUserManager
 
-class Location(models.Model):
-    name = models.CharField(max_length=255)
-    description = models.TextField()
-    coordinates = models.PointField()
-    has_ramp = models.BooleanField(default=False)
-    has_tactile_elements = models.BooleanField(default=False)
-    has_adapted_toilet = models.BooleanField(default=False)
-    category = models.CharField(max_length=50)
-
-    def __str__(self):
-        return self.name
-
-class Review(models.Model):
-    location = models.ForeignKey(Location, on_delete=models.CASCADE)
-    rating = models.IntegerField()
-    comment = models.TextField()
-    created_at = models.DateTimeField(auto_now_add=True)
-
 class UserManager(BaseUserManager):
-    def create_user(self, username, first_name, last_name, email, password, **extra_fields):
+    def create_user(self, username, first_name, last_name, email, password, is_disable, **extra_fields):
         if not email:
             raise ValueError('Користувач має мати email')
         if not username:
@@ -32,6 +14,7 @@ class UserManager(BaseUserManager):
             email=email,
             first_name=first_name,
             last_name=last_name,
+            is_disable=is_disable,
             **extra_fields
         )
         user.set_password(password)
@@ -51,6 +34,7 @@ class User(AbstractUser):
     first_name = models.CharField(max_length=30)
     last_name = models.CharField(max_length=30)
     email = models.EmailField(unique=True)
+    is_disable = models.BooleanField(default=False)
     is_active = models.BooleanField(default=True)
     is_staff = models.BooleanField(default=False)
 
@@ -60,3 +44,22 @@ class User(AbstractUser):
 
     def __str__(self) -> str:
         return self.username
+
+class Location(models.Model):
+    name = models.CharField(max_length=255)
+    description = models.TextField()
+    coordinates = models.PointField()
+    has_ramp = models.BooleanField(default=False)
+    has_tactile_elements = models.BooleanField(default=False)
+    has_adapted_toilet = models.BooleanField(default=False)
+    category = models.CharField(max_length=50)
+
+    def __str__(self):
+        return self.name
+
+class Review(models.Model):
+    user = models.ForeignKey(User, on_delete=models.CASCADE)
+    location = models.ForeignKey(Location, on_delete=models.CASCADE)
+    rating = models.IntegerField()
+    comment = models.TextField()
+    created_at = models.DateTimeField(auto_now_add=True)
