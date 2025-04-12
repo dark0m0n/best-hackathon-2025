@@ -18,7 +18,7 @@ const MapPage = () => {
     has_toilet: false,
     has_tactile: false,
   });
-  const [nearbyLocations, setNearbyLocations] = useState([]); 
+  // const [nearbyLocations, setNearbyLocations] = useState([]); 
   const [radius, setRadius] = useState(500); // в метрах
   const [loading, setLoading] = useState(false); // Стан для індикатора завантаження
 
@@ -40,17 +40,17 @@ const MapPage = () => {
     setNewPosition({ lat, lng });
 
     // Запит для фільтрації локацій поблизу
-    axios
-      .get('http://localhost:8000/api/locations/', {
-        params: {
-          latitude: lat,
-          longitude: lng,
-          radius: radius,
-        },
-      })
-      .then((res) => {
-        setNearbyLocations(res.data);
-      });
+  //   axios
+  //     .get('http://localhost:8000/api/locations/', {
+  //       params: {
+  //         latitude: lat,
+  //         longitude: lng,
+  //         radius: radius,
+  //       },
+  //     })
+  //     .then((res) => {
+  //       setNearbyLocations(res.data);
+  //     });
   };
 
   const handleSubmit = async (e) => {
@@ -198,7 +198,7 @@ const MapPage = () => {
           </form>
         )}
 
-        <div className="extra-section">
+        {/* <div className="extra-section">
           {nearbyLocations.length > 0 && (
             <div>
               <h3>Локації поблизу:</h3>
@@ -209,7 +209,7 @@ const MapPage = () => {
               </ul>
             </div>
           )}
-        </div>
+        </div> */}
       </div>
 
       <div className="map-main">
