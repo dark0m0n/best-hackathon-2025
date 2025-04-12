@@ -7,7 +7,11 @@ class LocationSerializer(serializers.ModelSerializer):
 
     class Meta:
         model = Location
-        fields = ['id', 'name', 'latitude', 'longitude']
+        fields = [
+            'id', 'name', 'description', 'latitude', 'longitude', 
+            'coordinates', 'has_ramp', 'has_adapted_toilet', 
+            'has_tactile_elements', 'category'
+        ]
 
     def get_latitude(self, obj):
         return obj.coordinates.y if obj.coordinates else None

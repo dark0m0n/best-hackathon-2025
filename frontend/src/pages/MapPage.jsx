@@ -2,10 +2,9 @@ import { useEffect, useState } from 'react';
 import { MapContainer, TileLayer, Marker, Popup, useMapEvents } from 'react-leaflet';
 import L from 'leaflet';
 import 'leaflet/dist/leaflet.css';
-import { getAllLocations } from '../api/locationApi';
-import './MapPage.css';
-import { useNavigate } from 'react-router-dom';
 import axios from 'axios';
+import { useNavigate } from 'react-router-dom';
+import './MapPage.css';
 
 const MapPage = () => {
   const [locations, setLocations] = useState([]);
@@ -20,22 +19,15 @@ const MapPage = () => {
     has_tactile: false,
   });
   const [nearbyLocations, setNearbyLocations] = useState([]); 
-  const [radius, setRadius] = useState(500); 
+  const [radius, setRadius] = useState(500); // в метрах
+  const [loading, setLoading] = useState(false); // Стан для індикатора завантаження
 
   const navigate = useNavigate();
 
-  // const getLocations = async () => {
-  //   const data = await getAllLocations();
-  //   setLocations(data || []);
-  // };
-
-  // useEffect(() => {
-  //   getLocations();
-  // }, []);
   useEffect(() => {
     axios
       .get('http://localhost:8000/api/locations/')
-      .then((res) => setLocations(res.data))
+      .then((res) => setLocations(res.data));
   }, []);
 
   const handleLocationClick = (loc) => {
@@ -47,59 +39,63 @@ const MapPage = () => {
     const { lat, lng } = e.latlng;
     setNewPosition({ lat, lng });
 
-    // Обчислюємо локації, які знаходяться в заданому радіусі від точки кліку
-    const clickedLatLng = L.latLng(lat, lng);
-    const nearby = locations.filter((loc) => {
-      const locationLatLng = L.latLng(loc.latitude, loc.longitude);
-      return clickedLatLng.distanceTo(locationLatLng) <= radius;
-    });
-
-    setNearbyLocations(nearby); // Оновлюємо список локацій поблизу
+    // Запит для фільтрації локацій поблизу
+    axios
+      .get('http://localhost:8000/api/locations/', {
+        params: {
+          latitude: lat,
+          longitude: lng,
+          radius: radius,
+        },
+      })
+      .then((res) => {
+        setNearbyLocations(res.data);
+      });
   };
 
- const handleSubmit = async (e) => {
-  e.preventDefault();
+  const handleSubmit = async (e) => {
+    e.preventDefault();
 
-  if (!newPosition) {
-    alert("Оберіть точку на мапі!");
-    return;
-  }
+    if (!newPosition) {
+      alert('Оберіть точку на мапі!');
+      return;
+    }
 
-  const data = {
-    name: formData.name,
-    description: formData.description,
-    has_ramp: formData.has_ramp,
-    has_adapted_toilet: formData.has_toilet,  // тут важливо, щоб назва збігалася з Django
-    has_tactile_elements: formData.has_tactile,
-    coordinates: {
-      type: 'Point',
-      coordinates: [newPosition.lng, newPosition.lat], // GeoDjango використовує (lng, lat)
-    },
-    category: 'default', // або дай можливість вибирати
+    const data = {
+      name: formData.name,
+      description: formData.description,
+      has_ramp: formData.has_ramp,
+      has_adapted_toilet: formData.has_toilet,
+      has_tactile_elements: formData.has_tactile,
+      coordinates: `SRID=4326;POINT (${newPosition.lng} ${newPosition.lat})`,
+      category: 'default',
+    };
+
+    setLoading(true); // Початок завантаження
+
+    try {
+      await axios.post('http://localhost:8000/api/locations/', data);
+      alert('Локацію додано!');
+      setFormData({
+        name: '',
+        description: '',
+        has_ramp: false,
+        has_toilet: false,
+        has_tactile: false,
+      });
+      setNewPosition(null);
+      setShowAddForm(false);
+
+      // Перезавантаження списку локацій
+      const res = await axios.get('http://localhost:8000/api/locations/');
+      setLocations(res.data);
+    } catch (error) {
+      console.error('Помилка при додаванні локації:', error);
+      alert('Щось пішло не так при додаванні локації.');
+    } finally {
+      setLoading(false); // Завершення завантаження
+    }
   };
-
-  try {
-    await axios.post('http://localhost:8000/api/locations/', data);
-    alert('Локацію додано!');
-    setFormData({
-      name: '',
-      description: '',
-      has_ramp: false,
-      has_toilet: false,
-      has_tactile: false,
-    });
-    setNewPosition(null);
-    setShowAddForm(false);
-
-    // Перезавантаження списку локацій
-    const res = await axios.get('http://localhost:8000/api/locations/');
-    setLocations(res.data);
-  } catch (error) {
-    console.error('Помилка при додаванні локації:', error);
-    alert('Щось пішло не так при додаванні локації.');
-  }
-};
-
 
   const LocationMarker = () => {
     useMapEvents({
@@ -142,23 +138,26 @@ const MapPage = () => {
 
         {showAddForm && (
           <form className="location-form" onSubmit={handleSubmit}>
-            <input className='location-name'
+            <input
+              className="location-name"
               type="text"
               name="name"
               placeholder="Назва"
               value={formData.name}
               onChange={(e) => setFormData({ ...formData, name: e.target.value })}
             />
-            <textarea className='location-desc'
+            <textarea
+              className="location-desc"
               name="description"
               placeholder="Опис"
               value={formData.description}
               onChange={(e) => setFormData({ ...formData, description: e.target.value })}
             ></textarea>
-            <ul className='location-filter-list'>
+            <ul className="location-filter-list">
               <li>
                 <label>
-                  <input className='location-filter'
+                  <input
+                    className="location-filter"
                     type="checkbox"
                     name="has_ramp"
                     checked={formData.has_ramp}
@@ -169,7 +168,8 @@ const MapPage = () => {
               </li>
               <li>
                 <label>
-                  <input className='location-filter'
+                  <input
+                    className="location-filter"
                     type="checkbox"
                     name="has_toilet"
                     checked={formData.has_toilet}
@@ -180,7 +180,8 @@ const MapPage = () => {
               </li>
               <li>
                 <label>
-                  <input className='location-filter'
+                  <input
+                    className="location-filter"
                     type="checkbox"
                     name="has_tactile"
                     checked={formData.has_tactile}
@@ -190,7 +191,9 @@ const MapPage = () => {
                 </label>
               </li>
             </ul>
-            <button type="submit" className='save-btn'>Зберегти</button>
+            <button type="submit" className="save-btn" disabled={loading}>
+              {loading ? 'Завантаження...' : 'Зберегти'}
+            </button>
             <p><small>📍 Натисніть на мапу для вибору точки</small></p>
           </form>
         )}
