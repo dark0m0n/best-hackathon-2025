@@ -1,7 +1,7 @@
-from rest_framework.viewsets import ReadOnlyModelViewSet
+from rest_framework import viewsets
 from .models import Location
 from .serializers import LocationSerializer
 
-class LocationViewSet(ReadOnlyModelViewSet):
+class LocationViewSet(viewsets.ModelViewSet):
     queryset = Location.objects.all()
     serializer_class = LocationSerializer

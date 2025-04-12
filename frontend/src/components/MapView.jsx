@@ -11,10 +11,11 @@ export default function MapView() {
 
   useEffect(() => {
     axios
-      .get('/api/locations/')
+      .get('http://localhost:8000/api/locations/')
       .then((res) => setLocations(res.data))
       .catch((err) => setError('Не вдалося завантажити дані'));
   }, []);
+  console.log(locations)
 
   return (
     <div style={{ height: '100vh', width: '100%' }}>
