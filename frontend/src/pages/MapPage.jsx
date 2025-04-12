@@ -57,20 +57,29 @@ const MapPage = () => {
     setNearbyLocations(nearby); // Оновлюємо список локацій поблизу
   };
 
-  const handleSubmit = (e) => {
-    e.preventDefault();
-    if (!newPosition) {
-      alert("Оберіть точку на мапі!");
-      return;
-    }
+ const handleSubmit = async (e) => {
+  e.preventDefault();
 
-    const data = {
-      ...formData,
-      latitude: newPosition.lat,
-      longitude: newPosition.lng,
-    };
+  if (!newPosition) {
+    alert("Оберіть точку на мапі!");
+    return;
+  }
 
-    console.log('Нова локація:', data);
+  const data = {
+    name: formData.name,
+    description: formData.description,
+    has_ramp: formData.has_ramp,
+    has_adapted_toilet: formData.has_toilet,  // тут важливо, щоб назва збігалася з Django
+    has_tactile_elements: formData.has_tactile,
+    coordinates: {
+      type: 'Point',
+      coordinates: [newPosition.lng, newPosition.lat], // GeoDjango використовує (lng, lat)
+    },
+    category: 'default', // або дай можливість вибирати
+  };
+
+  try {
+    await axios.post('http://localhost:8000/api/locations/', data);
     alert('Локацію додано!');
     setFormData({
       name: '',
@@ -81,7 +90,16 @@ const MapPage = () => {
     });
     setNewPosition(null);
     setShowAddForm(false);
-  };
+
+    // Перезавантаження списку локацій
+    const res = await axios.get('http://localhost:8000/api/locations/');
+    setLocations(res.data);
+  } catch (error) {
+    console.error('Помилка при додаванні локації:', error);
+    alert('Щось пішло не так при додаванні локації.');
+  }
+};
+
 
   const LocationMarker = () => {
     useMapEvents({
