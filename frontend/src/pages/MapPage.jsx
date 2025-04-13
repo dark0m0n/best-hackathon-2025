@@ -40,8 +40,35 @@ const MapPage = () => {
   const [activeLocation, setActiveLocation] = useState(null);
   const [reviewData, setReviewData] = useState({ rating: 0, comment: '' });
   const navigate = useNavigate();
+  const [isAuthenticated, setIsAuthenticated] = useState(false);
+  const [userData, setUserData] = useState(null);
 //-------------------
 
+  
+  //перевірка на автентифікацію
+  useEffect(() => {
+      // Перевірка, чи є автентифікація
+      const token = localStorage.getItem('authToken'); // приклад перевірки через токен
+      if (token) {
+        // Якщо токен є, то перевіряємо дані користувача через API
+        fetch('/api/current_user/', {
+          headers: {
+            'Authorization': `Bearer ${token}`,
+          }
+        })
+          .then(response => response.json())
+          .then(data => {
+            if (data.is_authenticated) {
+              setIsAuthenticated(true);
+              setUserData(data.user);  // Зберігаємо дані користувача
+            }
+          })
+          .catch(error => {
+            console.log('Error fetching user data:', error);
+          });
+      }
+  }, []);
+  //----------------
   
   //запит: рейтинг і відгуки
   const fetchLocationDetails = async (locationId) => {
@@ -422,8 +449,19 @@ useEffect(() => {
           ) : (
               //стандартний сайдбар
           <>
-            <div className="user-section">
-              <button className="login-btn">Увійти</button>
+                <div className="user-section">
+          {isAuthenticated ? (
+            <>
+              <div className="user-profile">
+                <img src={userData.avatar} alt="User Avatar" className="user-avatar" />
+                <span className="user-nickname">{userData.username}</span>
+              </div>
+            </>
+          ) : (
+            <>
+              <button onClick={() => navigate('/login')} className="login-btn">Увійти</button>
+            </>
+          )}
             </div>
 
             <div className="route-inputs">
