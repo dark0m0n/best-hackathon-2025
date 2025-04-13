@@ -10,6 +10,8 @@ from rest_framework.decorators import api_view
 from django.db.models import Avg
 from rest_framework.views import APIView
 from rest_framework import status
+from django.contrib.auth import authenticate
+from rest_framework.authtoken.models import Token
 
 class LocationViewSet(viewsets.ModelViewSet):
     queryset = Location.objects.all()
@@ -76,3 +78,19 @@ class RegisterView(APIView):
             serializer.save()
             return Response({'message': 'Користувач створений!'}, status=status.HTTP_201_CREATED)
         return Response(serializer.errors, status=status.HTTP_400_BAD_REQUEST)
+
+class LoginView(APIView):
+    def post(self, request):
+        username = request.data.get("username")
+        password = request.data.get("password")
+
+        user = authenticate(username=username, password=password)
+
+        if user is not None:
+            if not user.is_active:
+                return Response({"error": "Користувач деактивований"}, status=status.HTTP_403_FORBIDDEN)
+
+            token, created = Token.objects.get_or_create(user=user)
+            return Response({"token": token.key})
+
+        return Response({"error": "Неправильний логін або пароль"}, status=status.HTTP_401_UNAUTHORIZED)

@@ -21,30 +21,29 @@ const LoginPage = () => {
 
   const handleSubmit = (e) => {
     e.preventDefault();
-
-    fetch('/api/login/', {
+  
+    fetch('http://localhost:8000/api/login/', {
       method: 'POST',
       headers: {
         'Content-Type': 'application/json',
       },
-      body: JSON.stringify({
-        username: formData.username,
-        password: formData.password,
-      }),
+      body: JSON.stringify(formData),
     })
-      .then((response) => response.json())
-      .then((data) => {
-        if (data.token) {
-          localStorage.setItem('authToken', data.token); // зберігаємо токен
-          navigate('/'); // після успішного входу переходимо на головну сторінку
-        } else {
-          setErrorMessage(data.error || 'Щось пішло не так');
+      .then((response) => {
+        if (!response.ok) {
+          throw new Error('Неправильний логін або пароль');
         }
+        return response.json();
+      })
+      .then((data) => {
+        localStorage.setItem('authToken', data.token);
+        navigate('/');
       })
       .catch((error) => {
-        setErrorMessage('Сталася помилка при вході');
+        setErrorMessage(error.message || 'Сталася помилка при вході');
       });
   };
+  
 
   return (
     <div className="auth-page">
