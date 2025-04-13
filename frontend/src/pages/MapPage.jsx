@@ -42,6 +42,51 @@ const MapPage = () => {
   const navigate = useNavigate();
 
   useEffect(() => {
+  const fetchExtraLocationData = async () => {
+    if (!activeLocation) return;
+
+    try {
+      const [ratingRes, reviewsRes] = await Promise.all([
+        axios.get(`http://localhost:8000/api/average-rating/${activeLocation.id}/`),
+        axios.get(`http://localhost:8000/api/location-reviews/${activeLocation.id}/list_reviews/`)
+      ]);
+
+      setActiveLocation(prev => ({
+        ...prev,
+        average_rating: ratingRes.data.average_rating,
+        reviews: reviewsRes.data,
+      }));
+    } catch (error) {
+      console.error('Помилка при завантаженні додаткових даних про локацію', error);
+    }
+  };
+
+  fetchExtraLocationData();
+  }, [activeLocation?.id]);
+  
+
+  useEffect(() => {
+  const fetchLocationDetails = async () => {
+    if (!activeLocation) return;
+
+    try {
+      const reviewsRes = await axios.get(
+        `http://localhost:8000/api/location-reviews/${activeLocation.id}/list_reviews/`
+      );
+
+      setActiveLocation(prev => ({
+        ...prev,
+        reviews: reviewsRes.data
+      }));
+    } catch (error) {
+      console.error('Помилка при завантаженні відгуків:', error);
+    }
+  };
+
+  fetchLocationDetails();
+}, [activeLocation?.id]);
+
+  useEffect(() => {
     axios.get('http://localhost:8000/api/locations/')
       .then((res) => setLocations(res.data));
   }, []);
@@ -62,6 +107,7 @@ const MapPage = () => {
         comment: reviewData.comment,
       });
       alert('Відгук надіслано!');
+      await fetchLocationDetails(); // якщо винесеш її окремо з useEffect
       setReviewData({ rating: 0, comment: '' });
     } catch (error) {
       console.error('Помилка при додаванні відгуку:', error);
