@@ -181,14 +181,14 @@ padding: 10px 20px;
 .Search-list-box{
     padding: 10px;
     border-radius: 10px;
-    border: 1px solid #a5a4a4;
+    border: 1px solid #b3b2b2;
     background-color: #b6b6b6;
     width: 90%;
 }
 
 .Search-list-item{
     list-style-type: none;
-    border: 1px solid #565656;
+    border: 1px solid #9f9f9f;
     background-color: white;
     width: 90%;
     border-radius: 10px;
