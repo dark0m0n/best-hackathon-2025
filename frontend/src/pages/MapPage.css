@@ -170,8 +170,9 @@ padding: 10px 20px;
     display: block;
     /* Замість flex, щоб елементи йшли один під одним */
     height: 100%;
-    padding: 0;
     /* Перевір, чи є у батька фіксована висота */
+    padding: 10px 0;
+    margin: 0;
 }
 
 .Search-list-item {
@@ -204,6 +205,8 @@ padding: 10px 20px;
 
 .filter-section{
     max-height: 200px;
+    margin-top: 20px;
+    flex-shrink: 0;
 }
 
 .Select-location-desc{
@@ -311,10 +314,10 @@ padding: 10px 20px;
 }
 
 .search-list-wrapper {
-    position: relative;
-    flex: 1;
-    overflow-y: auto; 
-        margin-top: 16px;
+    flex-grow: 1;
+  min-height: 0;
+  overflow-y: auto;
+  margin-top: 10px;
         mask-image: linear-gradient(to bottom, rgba(0, 0, 0, 1) 90%, transparent 100%);
         -webkit-mask-image: linear-gradient(to bottom, rgba(0, 0, 0, 1) 90%, transparent 100%);
 }
