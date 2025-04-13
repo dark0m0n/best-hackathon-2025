@@ -65,6 +65,7 @@ const RegisterPage = () => {
       <h2>Реєстрація</h2>
       {errorMessage && <p className="error-message">{errorMessage}</p>}
       <form onSubmit={handleSubmit}>
+        <div class="form-group">
         <label>
           Ім'я користувача
           <input
@@ -75,6 +76,8 @@ const RegisterPage = () => {
             required
           />
         </label>
+        </div>
+        <div class="form-group">
         <label>
           Ім'я
           <input
@@ -85,6 +88,8 @@ const RegisterPage = () => {
             required
           />
         </label>
+        </div>
+        <div class="form-group">
         <label>
           Прізвище
           <input
@@ -95,6 +100,8 @@ const RegisterPage = () => {
             required
           />
         </label>
+        </div>
+        <div class="form-group">
         <label>
           Електронна пошта
           <input
@@ -105,6 +112,8 @@ const RegisterPage = () => {
             required
           />
         </label>
+        </div>
+        <div class="form-group">
         <label>
           Пароль
           <input
@@ -115,6 +124,8 @@ const RegisterPage = () => {
             required
           />
         </label>
+        </div>
+        <div class="form-group">
         <label>
           Підтвердження пароля
           <input
@@ -124,7 +135,9 @@ const RegisterPage = () => {
             onChange={handleChange}
             required
           />
-        </label>
+          </label>
+          </div>
+        <div class="form-group">
         <label>
           <input 
             type="checkbox"
@@ -133,7 +146,8 @@ const RegisterPage = () => {
             onChange={handleChange}
           />
           Ви є інвалідом?
-        </label>
+          </label>
+          </div>
         <button type="submit">Зареєструватися</button>
       </form>
       <p>
