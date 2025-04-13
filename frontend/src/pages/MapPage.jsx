@@ -41,6 +41,26 @@ const MapPage = () => {
 
   const navigate = useNavigate();
 
+  const fetchLocationDetails = async (locationId) => {
+  try {
+    const reviewsRes = await axios.get(
+      `http://localhost:8000/api/location-reviews/${locationId}/list_reviews/`
+    );
+
+    const ratingRes = await axios.get(
+      `http://localhost:8000/api/average-rating/${locationId}/`
+    );
+
+    setActiveLocation((prev) => ({
+      ...prev,
+      reviews: reviewsRes.data,
+      average_rating: ratingRes.data.average_rating,
+    }));
+  } catch (error) {
+    console.error('Помилка при завантаженні деталей локації:', error);
+  }
+};
+
   useEffect(() => {
   const fetchExtraLocationData = async () => {
     if (!activeLocation) return;
@@ -65,26 +85,13 @@ const MapPage = () => {
   }, [activeLocation?.id]);
   
 
+
   useEffect(() => {
-  const fetchLocationDetails = async () => {
-    if (!activeLocation) return;
-
-    try {
-      const reviewsRes = await axios.get(
-        `http://localhost:8000/api/location-reviews/${activeLocation.id}/list_reviews/`
-      );
-
-      setActiveLocation(prev => ({
-        ...prev,
-        reviews: reviewsRes.data
-      }));
-    } catch (error) {
-      console.error('Помилка при завантаженні відгуків:', error);
-    }
-  };
-
-  fetchLocationDetails();
-}, [activeLocation?.id]);
+  if (activeLocation?.id) {
+    fetchLocationDetails(activeLocation.id);
+  }
+  }, [activeLocation?.id]);
+  
 
   useEffect(() => {
     axios.get('http://localhost:8000/api/locations/')
@@ -99,21 +106,23 @@ const MapPage = () => {
   };
 
   const handleReviewSubmit = async (e) => {
-    e.preventDefault();
-    try {
-      await axios.post('http://localhost:8000/api/reviews/', {
-        location: activeLocation.id,
-        rating: reviewData.rating,
-        comment: reviewData.comment,
-      });
-      alert('Відгук надіслано!');
-      await fetchLocationDetails(); // якщо винесеш її окремо з useEffect
-      setReviewData({ rating: 0, comment: '' });
-    } catch (error) {
-      console.error('Помилка при додаванні відгуку:', error);
-      alert('Щось пішло не так при додаванні відгуку.');
-    }
-  };
+  e.preventDefault();
+  try {
+    await axios.post('http://localhost:8000/api/reviews/', {
+      location: activeLocation.id,
+      rating: reviewData.rating,
+      comment: reviewData.comment,
+    });
+
+    alert('Відгук надіслано!');
+    setReviewData({ rating: 0, comment: '' });
+
+    await fetchLocationDetails(activeLocation.id);
+  } catch (error) {
+    console.error('Помилка при додаванні відгуку:', error);
+    alert('Щось пішло не так при додаванні відгуку.');
+  }
+};
   
   const handleMapClick = (e) => {
     const { lat, lng } = e.latlng;
