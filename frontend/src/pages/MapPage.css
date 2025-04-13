@@ -170,6 +170,7 @@ padding: 10px 20px;
     display: block;
     /* Замість flex, щоб елементи йшли один під одним */
     height: 100%;
+    padding: 0;
     /* Перевір, чи є у батька фіксована висота */
 }
 
@@ -184,8 +185,7 @@ padding: 10px 20px;
     cursor: pointer;
     margin-bottom: 8px;
     margin-left: 0;
-    padding-left: 10px;
-    /* Відступи між елементами */
+    margin-right: 0;
 }
 
 .review-form{
