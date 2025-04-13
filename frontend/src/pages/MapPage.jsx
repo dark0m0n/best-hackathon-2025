@@ -1,3 +1,4 @@
+//імпорти
 import { useEffect, useState } from 'react';
 import { MapContainer, TileLayer, Marker, Popup, useMapEvents } from 'react-leaflet';
 import L from 'leaflet';
@@ -6,9 +7,12 @@ import axios from 'axios';
 import { useNavigate } from 'react-router-dom';
 import './MapPage.css';
 import { Polyline } from 'react-leaflet';
+//-----------
+
 
 
 const MapPage = () => {
+  //оголошення
   const [locations, setLocations] = useState([]);
   const [selectedLocation, setSelectedLocation] = useState(null);
   const [centerLocation, setCenterLocation] = useState(null);
@@ -35,21 +39,17 @@ const MapPage = () => {
   const [routeInfo, setRouteInfo] = useState(null);
   const [activeLocation, setActiveLocation] = useState(null);
   const [reviewData, setReviewData] = useState({ rating: 0, comment: '' });
-
-
-
-
   const navigate = useNavigate();
+//-------------------
 
+  
+  //запит: рейтинг і відгуки
   const fetchLocationDetails = async (locationId) => {
   try {
-    const reviewsRes = await axios.get(
-      `http://localhost:8000/api/location-reviews/?location=${locationId}`
-    );
-    
-    const ratingRes = await axios.get(
-      `http://localhost:8000/api/average-rating/${locationId}/`
-    );
+    const [reviewsRes, ratingRes] = await Promise.all([
+      axios.get(`http://localhost:8000/api/location-reviews/?location=${locationId}`),
+      axios.get(`http://localhost:8000/api/average-rating/${locationId}/`)
+    ]);
 
     setActiveLocation((prev) => ({
       ...prev,
@@ -60,61 +60,31 @@ const MapPage = () => {
     console.error('Помилка при завантаженні деталей локації:', error);
   }
 };
-
-  const fetchExtraLocationData = async (locationId) => {
-  if (!activeLocation) return;
-
-  try {
-    const ratingRes = await axios.get(
-      `http://localhost:8000/api/average-rating/${locationId}/`
-    );
-
-    const reviewsRes = await axios.get(
-      `http://localhost:8000/api/location-reviews/?location=${locationId}`
-    );
-    console.log("Рейтинг:", ratingRes.data);
-    console.log("Відгуки:", reviewsRes.data);
-
-
-    setActiveLocation(prev => ({
-      ...prev,
-      average_rating: ratingRes.data.average_rating,
-      reviews: reviewsRes.data,
-      
-    }));
-    console.log(activeLocation.reviews);
-  } catch (error) {
-    console.error('Помилка при завантаженні додаткових даних про локацію', error);
-  }
-};
-  
-
-
-  useEffect(() => {
+useEffect(() => {
   if (activeLocation?.id) {
     fetchLocationDetails(activeLocation.id);
   }
-  }, [activeLocation?.id]);
-
-    useEffect(() => {
-  if (activeLocation?.id) {
-    fetchExtraLocationData(activeLocation.id);
-  }
-  }, [activeLocation?.id]);
+}, [activeLocation?.id]);
+  //---------------------
   
 
+  //запит: список локацій
   useEffect(() => {
     axios.get('http://localhost:8000/api/locations/')
       .then((res) => setLocations(res.data));
   }, []);
+  //--------------
 
+  //клік на локацію
   const handleLocationClick = (loc) => {
     setSelectedLocation(loc);
     setCenterLocation({ latitude: loc.latitude, longitude: loc.longitude });
     setIsSearching(false);
     setActiveLocation(loc);
   };
+  //------------------
 
+  //відправка відгуку
   const handleReviewSubmit = async (e) => {
   e.preventDefault();
   try {
@@ -133,13 +103,17 @@ const MapPage = () => {
     alert('Щось пішло не так при додаванні відгуку.');
   }
 };
-  
+  //----------------
+
+  //нова мітка
   const handleMapClick = (e) => {
     const { lat, lng } = e.latlng;
     setNewPosition({ lat, lng });
     setCenterLocation(null); // Скасовуємо фокус на попередню точку
   };
+  //--------------
 
+  //додавання нової локаціїї
   const handleSubmit = async (e) => {
     e.preventDefault();
 
@@ -182,7 +156,9 @@ const MapPage = () => {
       setLoading(false);
     }
   };
+  //---------------
 
+  //фільтруємо
   const filteredLocations = locations.filter((loc) => {
     const matchesSearch =
       loc.name.toLowerCase().includes(searchQuery.toLowerCase());
@@ -192,7 +168,9 @@ const MapPage = () => {
       (filters.has_tactile ? loc.has_tactile_elements : true);
     return matchesSearch && matchesFilters;
   });
+  //-------------------
 
+  //переміщуємо мапу до локації
   const MapCenter = ({ location }) => {
     const map = useMapEvents({});
 
@@ -204,7 +182,9 @@ const MapPage = () => {
 
     return null;
   };
+  //------------------------
 
+  //шаблон для маршрутів
   const handleBuildRoute = async () => {
   if (!fromQuery || !toQuery) {
     alert("Введіть обидві точки маршруту.");
@@ -229,8 +209,9 @@ const MapPage = () => {
     alert("Не вдалося побудувати маршрут.");
   }
 };
+//------------------
 
-
+  //створюємо маркер
   const LocationMarker = () => {
     useMapEvents({
       click: handleMapClick,
@@ -252,9 +233,12 @@ const MapPage = () => {
       </Marker>
     ) : null;
   };
+  //-------------------------
 
+ 
   return (
     <div className="map-page-container">
+          {/*Сайдбари */} 
       <div className="sidebar">
         {activeLocation ? (
     // Якщо вибрана локація, відображаємо новий сайдбар з деталями
@@ -311,9 +295,25 @@ const MapPage = () => {
   ></textarea>
   <br />
   <button type="submit" className='com-btn'>Надіслати відгук</button>
-</form>
+            </form>
+            {/*-----Відгуки-----*/}
+            {activeLocation && activeLocation.reviews && (
+  <div className="reviews-list">
+    <h3>Відгуки:</h3>
+    {activeLocation.reviews.map((review) => (
+      <div key={review.id} className="review-item">
+        {/* <div><strong>{review.user.username}</strong></div> */}
+        <div>Оцінка: {review.rating} / 10</div>
+        <div>{review.comment}</div>
+        <div>Дата: {new Date(review.created_at).toLocaleDateString()}</div>
+        
+      </div>
+    ))}
+  </div>
+)}
 </div>
-  ) : isSearching ? (
+        ) : isSearching ? (
+            //результати пошуку
           <>
             <button className="back-btn" onClick={() => {
               setIsSearching(false);
@@ -370,14 +370,15 @@ const MapPage = () => {
                                     checked={filters.has_tactile}
                                      onChange={(e) => setFilters({ ...filters, has_tactile: e.target.checked })}
                                   />
-                              Тактильна навігація
+                              Тактильні елементи
                       </label>
                    </li>
                </ul>
             </div>
             </div>
           </>
-        ) : (
+          ) : (
+              //стандартний сайдбар
           <>
             <div className="user-section">
               <button className="login-btn">Увійти</button>
@@ -517,21 +518,6 @@ const MapPage = () => {
            <p>Час: {routeInfo.time}</p>
             </div>
             )}
-
-          {activeLocation && activeLocation.reviews && (
-  <div className="reviews-list">
-    <h3>Відгуки:</h3>
-    {activeLocation.reviews.map((review) => (
-      <div key={review.id} className="review-item">
-        {/* <div><strong>{review.user.username}</strong></div> */}
-        <div>Оцінка: {review.rating} / 10</div>
-        <div>{review.comment}</div>
-        <div>Дата: {new Date(review.created_at).toLocaleDateString()}</div>
-        
-      </div>
-    ))}
-  </div>
-)}
 
           {selectedLocation && !isSearching && (
             <Marker
