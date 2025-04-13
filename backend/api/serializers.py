@@ -1,5 +1,5 @@
 from rest_framework import serializers
-from .models import Location
+from .models import Location, Review
 
 class LocationSerializer(serializers.ModelSerializer):
     latitude = serializers.SerializerMethodField()
@@ -18,3 +18,8 @@ class LocationSerializer(serializers.ModelSerializer):
 
     def get_longitude(self, obj):
         return obj.coordinates.x if obj.coordinates else None
+
+class ReviewSerializer(serializers.ModelSerializer):
+    class Meta:
+        model = Review
+        fields = ['id', 'location', 'rating', 'comment', 'created_at']
