@@ -58,7 +58,7 @@ class Location(models.Model):
         return self.name
 
 class Review(models.Model):
-    user = models.ForeignKey(User, on_delete=models.CASCADE, default=0)
+    user = models.ForeignKey(User, on_delete=models.CASCADE, null=True, blank=True)
     location = models.ForeignKey(Location, on_delete=models.CASCADE)
     rating = models.IntegerField()
     comment = models.TextField()
