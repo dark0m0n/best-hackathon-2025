@@ -360,8 +360,8 @@ useEffect(() => {
               /*style={{ color: getColor(review.rating) }}*/
             >
               {/*{review.rating} / 10*/}
-              <span style={{ color: getColor(activeLocation.review.rating) }}>
-      {activeLocation.review.rating}
+              <span style={{ color: getColor(review.rating) }}>
+      {review.rating}
     </span>
     <span style={{ color: 'gray' }}> / </span>
     <span style={{ color: 'green' }}>10</span>
