@@ -166,8 +166,10 @@ padding: 10px 20px;
     padding: 10px;
     border-radius: 10px;
     border: 1px solid #b3b2b2;
-    background-color: #cbcaca;
+    background-color: #ebeaea;
     width: 90%;
+    display: flex;
+    align-items: center;
     height: 100%;
 }
 
@@ -177,7 +179,6 @@ padding: 10px 20px;
     background-color: white;
     width: 97%;
     border-radius: 10px;
-    padding: 10px;
     cursor: pointer;
 }
 
@@ -231,7 +232,7 @@ padding: 10px 20px;
 }
 
 .com-btn:hover {
-    background-color: #0056b3;
+    background-color: #097af2;
 }
 
 /* Відгуки */
@@ -273,4 +274,55 @@ padding: 10px 20px;
     font-weight: bold;
     color: #333;
     margin-bottom: 4px;
+}
+
+.reviews-wrapper {
+    position: relative;
+    max-height: 300px;
+    /* або скільки треба */
+    overflow-y: auto;
+    padding-right: 10px;
+    margin-top: 16px;
+    mask-image: linear-gradient(to bottom, rgba(0, 0, 0, 1) 90%, transparent 100%);
+    -webkit-mask-image: linear-gradient(to bottom, rgba(0, 0, 0, 1) 90%, transparent 100%);
+}
+
+.reviews-wrapper::-webkit-scrollbar {
+    width: 6px;
+}
+
+.reviews-wrapper::-webkit-scrollbar-thumb {
+    background-color: #aaa;
+    border-radius: 4px;
+}
+
+.reviews-wrapper::-webkit-scrollbar-track {
+    background: transparent;
+}
+
+.reviews-wrapper {
+    scroll-behavior: smooth;
+}
+
+.search-list-wrapper {
+    max-height: 300px;
+    /* або скільки требав */
+    overflow-y: auto;
+    margin-bottom: 16px;
+    padding-right: 6px;
+    mask-image: linear-gradient(to bottom, rgba(0, 0, 0, 1) 95%, transparent 100%);
+    -webkit-mask-image: linear-gradient(to bottom, rgba(0, 0, 0, 1) 95%, transparent 100%);
+}
+
+.search-list-wrapper::-webkit-scrollbar {
+    width: 6px;
+}
+
+.search-list-wrapper::-webkit-scrollbar-thumb {
+    background-color: #aaa;
+    border-radius: 4px;
+}
+
+.search-list-wrapper::-webkit-scrollbar-track {
+    background: transparent;
 }
