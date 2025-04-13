@@ -26,7 +26,6 @@ const MapPage = () => {
     has_toilet: false,
     has_tactile: false,
   });
-  const [radius, setRadius] = useState(500);
   const [loading, setLoading] = useState(false);
   const [searchQuery, setSearchQuery] = useState('');
   const [isSearching, setIsSearching] = useState(false);
@@ -35,7 +34,6 @@ const MapPage = () => {
   const [routeCoordinates, setRouteCoordinates] = useState([]);
   const [routeInfo, setRouteInfo] = useState(null);
   const [activeLocation, setActiveLocation] = useState(null);
-  const [showReviewForm, setShowReviewForm] = useState(false);
   const [reviewData, setReviewData] = useState({ rating: 0, comment: '' });
   const [isFormExpanded, setIsFormExpanded] = useState(false);
 
@@ -65,7 +63,7 @@ const MapPage = () => {
         comment: reviewData.comment,
       });
       alert('Відгук надіслано!');
-      setShowReviewForm(false);
+      setReviewData({ rating: 0, comment: '' });
     } catch (error) {
       console.error('Помилка при додаванні відгуку:', error);
       alert('Щось пішло не так при додаванні відгуку.');
