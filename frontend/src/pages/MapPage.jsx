@@ -44,9 +44,9 @@ const MapPage = () => {
   const fetchLocationDetails = async (locationId) => {
   try {
     const reviewsRes = await axios.get(
-      `http://localhost:8000/api/location-reviews/${locationId}/list_reviews/`
+      `http://localhost:8000/api/location-reviews/?location=${locationId}`
     );
-
+    
     const ratingRes = await axios.get(
       `http://localhost:8000/api/average-rating/${locationId}/`
     );
@@ -61,34 +61,44 @@ const MapPage = () => {
   }
 };
 
-  useEffect(() => {
-  const fetchExtraLocationData = async () => {
-    if (!activeLocation) return;
+  const fetchExtraLocationData = async (locationId) => {
+  if (!activeLocation) return;
 
-    try {
-      const [ratingRes, reviewsRes] = await Promise.all([
-        axios.get(`http://localhost:8000/api/average-rating/${activeLocation.id}/`),
-        axios.get(`http://localhost:8000/api/location-reviews/${activeLocation.id}/list_reviews/`)
-      ]);
+  try {
+    const ratingRes = await axios.get(
+      `http://localhost:8000/api/average-rating/${locationId}/`
+    );
 
-      setActiveLocation(prev => ({
-        ...prev,
-        average_rating: ratingRes.data.average_rating,
-        reviews: reviewsRes.data,
-      }));
-    } catch (error) {
-      console.error('Помилка при завантаженні додаткових даних про локацію', error);
-    }
-  };
+    const reviewsRes = await axios.get(
+      `http://localhost:8000/api/location-reviews/?location=${locationId}`
+    );
+    console.log("Рейтинг:", ratingRes.data);
+    console.log("Відгуки:", reviewsRes.data);
 
-  fetchExtraLocationData();
-  }, [activeLocation?.id]);
+
+    setActiveLocation(prev => ({
+      ...prev,
+      average_rating: ratingRes.data.average_rating,
+      reviews: reviewsRes.data,
+      
+    }));
+    console.log(activeLocation.reviews);
+  } catch (error) {
+    console.error('Помилка при завантаженні додаткових даних про локацію', error);
+  }
+};
   
 
 
   useEffect(() => {
   if (activeLocation?.id) {
     fetchLocationDetails(activeLocation.id);
+  }
+  }, [activeLocation?.id]);
+
+    useEffect(() => {
+  if (activeLocation?.id) {
+    fetchExtraLocationData(activeLocation.id);
   }
   }, [activeLocation?.id]);
   
@@ -513,10 +523,11 @@ const MapPage = () => {
     <h3>Відгуки:</h3>
     {activeLocation.reviews.map((review) => (
       <div key={review.id} className="review-item">
-        <div><strong>{review.user.username}</strong></div>
+        {/* <div><strong>{review.user.username}</strong></div> */}
         <div>Оцінка: {review.rating} / 10</div>
         <div>{review.comment}</div>
         <div>Дата: {new Date(review.created_at).toLocaleDateString()}</div>
+        
       </div>
     ))}
   </div>
