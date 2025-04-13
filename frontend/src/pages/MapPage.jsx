@@ -50,8 +50,9 @@ const MapPage = () => {
   
 
 useEffect(() => {
-  const value = localStorage.getItem('isDisable') === 'true';
-  setIsDisabledUser(value);
+  const isDisable = localStorage.getItem('isDisable');
+  console.log('🧩 isDisable в localStorage:', isDisable);
+  setIsDisabledUser(isDisable === 'true');
 }, []);
   //перевірка на автентифікацію
   useEffect(() => {
@@ -481,8 +482,8 @@ useEffect(() => {
               /*style={{ color: getColor(review.rating) }}*/
             >
               {/*{review.rating} / 10*/}
-              <span style={{ color: getColor(review.rating) }}>
-      {review.rating}
+              <span style={{ color: getColor(activeLocation.average_rating) }}>
+      {activeLocation.average_rating}
     </span>
     <span style={{ color: 'gray' }}> / </span>
     <span style={{ color: 'green' }}>10</span>
