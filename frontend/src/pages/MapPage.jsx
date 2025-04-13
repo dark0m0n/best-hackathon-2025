@@ -245,7 +245,7 @@ const MapPage = () => {
     required
   ></textarea>
   <br />
-  <button type="submit" className='com-btn'>Надіслати відгук</button>
+  <button  className='com-btn'>Надіслати відгук</button>
 </form>
 </div>
   ) : isSearching ? (
