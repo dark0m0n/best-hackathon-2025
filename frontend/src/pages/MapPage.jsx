@@ -35,7 +35,6 @@ const MapPage = () => {
   const [routeInfo, setRouteInfo] = useState(null);
   const [activeLocation, setActiveLocation] = useState(null);
   const [reviewData, setReviewData] = useState({ rating: 0, comment: '' });
-  const [isFormExpanded, setIsFormExpanded] = useState(false);
 
 
 
@@ -201,10 +200,16 @@ const MapPage = () => {
   <h2>{activeLocation.name}</h2>
   <p>{activeLocation.description}</p>
   <div className="tags">
-    {activeLocation.has_ramp && <span className="tag">Пандус</span>}
-    {activeLocation.has_toilet && <span className="tag">Адаптований туалет</span>}
-    {activeLocation.has_tactile_elements && <span className="tag">Тактильні елементи</span>}
+  <div className="tag">
+    {activeLocation.has_ramp ? '✅' : '❌'} Пандус
   </div>
+  <div className="tag">
+    {activeLocation.has_toilet ? '✅' : '❌'} Адаптований туалет
+  </div>
+  <div className="tag">
+    {activeLocation.has_tactile_elements ? '✅' : '❌'} Тактильні елементи
+  </div>
+</div>
 
   {activeLocation.average_rating && (
     <div className="average-rating">
@@ -215,14 +220,13 @@ const MapPage = () => {
   {/* ======= Форма для залишення відгуку ======= */}
 <form
   onSubmit={handleReviewSubmit}
-  className={`review-form ${isFormExpanded ? 'expanded' : 'collapsed'}`}
+  className={`review-form`}
 >
   <label>
     Оцінка (1-10):&nbsp;
     <input
       type="number"
       value={reviewData.rating}
-      onFocus={() => setIsFormExpanded(true)}
       onChange={(e) =>
         setReviewData({ ...reviewData, rating: e.target.value })
       }
@@ -235,7 +239,6 @@ const MapPage = () => {
   <textarea
     placeholder="Ваш коментар"
     value={reviewData.comment}
-    onFocus={() => setIsFormExpanded(true)}
     onChange={(e) =>
       setReviewData({ ...reviewData, comment: e.target.value })
     }
