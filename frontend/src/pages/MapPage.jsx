@@ -481,8 +481,8 @@ useEffect(() => {
               /*style={{ color: getColor(review.rating) }}*/
             >
               {/*{review.rating} / 10*/}
-              <span style={{ color: getColor(activeLocation.average_rating) }}>
-      {activeLocation.average_rating}
+              <span style={{ color: getColor(review.rating) }}>
+      {review.rating}
     </span>
     <span style={{ color: 'gray' }}> / </span>
     <span style={{ color: 'green' }}>10</span>
