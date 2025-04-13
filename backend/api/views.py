@@ -51,6 +51,15 @@ class LocationViewSet(viewsets.ModelViewSet):
         serializer = self.get_serializer(location)
         return Response(serializer.data, status=status.HTTP_201_CREATED)
 
+    def update(self, request, *args, **kwargs):
+        if not request.user.is_authenticated:
+            return Response({'error': 'Unauthorized'}, status=status.HTTP_401_UNAUTHORIZED)
+
+        if not request.user.is_disable:
+            return Response({'error': 'Ви не маєте прав редагувати локацію'}, status=status.HTTP_403_FORBIDDEN)
+
+        return super().update(request, *args, **kwargs)
+
 class ReviewViewSet(viewsets.ModelViewSet):
     queryset = Review.objects.all()
     serializer_class = ReviewSerializer
