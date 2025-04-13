@@ -68,30 +68,6 @@ const [reviewData, setReviewData] = useState({ rating: 0, comment: '' });
       console.error('Помилка при додаванні відгуку:', error);
       alert('Щось пішло не так при додаванні відгуку.');
     }
-    return (
-      <div>
-        {showReviewForm && (
-          <form onSubmit={handleReviewSubmit}>
-            <label>Оцінка (1-10):
-              <input
-                type="number"
-                value={reviewData.rating}
-                onChange={(e) => setReviewData({ ...reviewData, rating: e.target.value })}
-                min="1"
-                max="10"
-                required
-              />
-            </label>
-            <textarea
-              placeholder="Ваш коментар"
-              value={reviewData.comment}
-              onChange={(e) => setReviewData({ ...reviewData, comment: e.target.value })}
-            ></textarea>
-            <button type="submit">Залишити відгук</button>
-          </form>
-        )}
-      </div>
-    );
   };
   
   const handleMapClick = (e) => {
@@ -219,26 +195,58 @@ const [reviewData, setReviewData] = useState({ rating: 0, comment: '' });
         {activeLocation ? (
     // Якщо вибрана локація, відображаємо новий сайдбар з деталями
     <div className="detailed-location-sidebar">
-      <button onClick={() => setActiveLocation(null)} className="back-btn">
-        ← Назад
-      </button>
-      <h2>{activeLocation.name}</h2>
-      <p>{activeLocation.description}</p>
-      <div className="tags">
-        {activeLocation.has_ramp && <span className="tag">Пандус</span>}
-        {activeLocation.has_toilet && <span className="tag">Адаптований туалет</span>}
-        {activeLocation.has_tactile_elements && <span className="tag">Тактильна навігація</span>}
-      </div>
-      {/* Відображення середнього рейтингу */}
-      {activeLocation.average_rating && (
-        <div className="average-rating">
-          <strong>Рейтинг: {activeLocation.average_rating} / 10</strong>
-        </div>
-      )}
+  <button onClick={() => setActiveLocation(null)} className="back-btn">
+    ← Назад
+  </button>
+  <h2>{activeLocation.name}</h2>
+  <p>{activeLocation.description}</p>
+  <div className="tags">
+    {activeLocation.has_ramp && <span className="tag">Пандус</span>}
+    {activeLocation.has_toilet && <span className="tag">Адаптований туалет</span>}
+    {activeLocation.has_tactile_elements && <span className="tag">Тактильна навігація</span>}
+  </div>
 
-      {/* Додатково можете додати можливість додавати відгук */}
-      <button onClick={() => setShowReviewForm(true)}>Залишити відгук</button>
+  {activeLocation.average_rating && (
+    <div className="average-rating">
+      <strong>Рейтинг: {activeLocation.average_rating} / 10</strong>
     </div>
+  )}
+
+  {/* ======= Форма для залишення відгуку ======= */}
+  {showReviewForm && (
+    <form onSubmit={handleReviewSubmit} className="review-form">
+      <label>
+        Оцінка (1-10):&nbsp;
+        <input
+          type="number"
+          value={reviewData.rating}
+          onChange={(e) =>
+            setReviewData({ ...reviewData, rating: e.target.value })
+          }
+          min="1"
+          max="10"
+          required
+        />
+      </label>
+      <br />
+      <textarea
+        placeholder="Ваш коментар"
+        value={reviewData.comment}
+        onChange={(e) =>
+          setReviewData({ ...reviewData, comment: e.target.value })
+        }
+        required
+      ></textarea>
+      <br />
+      <button type="submit">Надіслати відгук</button>
+    </form>
+  )}
+
+  {/* Кнопка для показу форми */}
+  {!showReviewForm && (
+    <button onClick={() => setShowReviewForm(true)}>Залишити відгук</button>
+  )}
+</div>
   ) : isSearching ? (
           <>
             <button className="back-btn" onClick={() => {
