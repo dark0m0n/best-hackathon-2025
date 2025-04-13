@@ -202,14 +202,14 @@ padding: 10px 20px;
 }
 
 .filter-section{
-    margin-top: auto;
+    max-height: 200px;
 }
 
 .Select-location-desc{
     padding: 10px;
         border-radius: 10px;
         border: 1px solid #b3b2b2;
-        background-color: #cbcaca;
+        background-color: #e5e3e3;
         width: 90%;
         min-height: 80px;
 }
@@ -311,10 +311,8 @@ padding: 10px 20px;
 
 .search-list-wrapper {
     position: relative;
-        max-height: 1200px;
-        /* або скільки треба */
-        overflow-y: auto;
-        padding-right: 10px;
+    flex: 1;
+    overflow-y: auto; 
         margin-top: 16px;
         mask-image: linear-gradient(to bottom, rgba(0, 0, 0, 1) 90%, transparent 100%);
         -webkit-mask-image: linear-gradient(to bottom, rgba(0, 0, 0, 1) 90%, transparent 100%);
