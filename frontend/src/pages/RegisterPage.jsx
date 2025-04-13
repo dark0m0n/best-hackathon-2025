@@ -39,10 +39,10 @@ const RegisterPage = () => {
       },
       body: JSON.stringify({
         username: formData.username,
-        email: formData.email,
-        password: formData.password,
         first_name: formData.first_name,
         last_name: formData.last_name,
+        email: formData.email,
+        password: formData.password,
         is_disable: formData.is_disable,
       }),
     })
@@ -68,7 +68,7 @@ const RegisterPage = () => {
           Ім'я користувача
           <input
             type="text"
-            name="first_name"
+            name="username"
             value={formData.first_name}
             onChange={handleChange}
             required
@@ -78,7 +78,7 @@ const RegisterPage = () => {
           Ім'я
           <input
             type="text"
-            name="last_name"
+            name="first_name"
             value={formData.last_name}
             onChange={handleChange}
             required
@@ -88,7 +88,7 @@ const RegisterPage = () => {
           Прізвище
           <input
             type="text"
-            name="username"
+            name="last_name"
             value={formData.username}
             onChange={handleChange}
             required
