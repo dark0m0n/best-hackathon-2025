@@ -162,24 +162,28 @@ padding: 10px 20px;
     margin-bottom: 5px;
 }
 
-.Search-list-box{
+.Search-list-box {
     padding: 10px;
     border-radius: 10px;
     border: 1px solid #b3b2b2;
     background-color: #ebeaea;
     width: 90%;
-    display: flex;
-    align-items: center;
+    display: block;
+    /* Замість flex, щоб елементи йшли один під одним */
     height: 100%;
+    /* Перевір, чи є у батька фіксована висота */
 }
 
-.Search-list-item{
+.Search-list-item {
     list-style-type: none;
     border: 1px solid #9f9f9f;
     background-color: white;
-    width: 97%;
+    width: 100%;
+    /* Ширина на весь контейнер */
     border-radius: 10px;
     cursor: pointer;
+    margin-bottom: 8px;
+    /* Відступи між елементами */
 }
 
 .review-form{
@@ -305,13 +309,14 @@ padding: 10px 20px;
 }
 
 .search-list-wrapper {
-    max-height: 300px;
-    /* або скільки требав */
-    overflow-y: auto;
-    margin-bottom: 16px;
-    padding-right: 6px;
-    mask-image: linear-gradient(to bottom, rgba(0, 0, 0, 1) 95%, transparent 100%);
-    -webkit-mask-image: linear-gradient(to bottom, rgba(0, 0, 0, 1) 95%, transparent 100%);
+    position: relative;
+        max-height: 300px;
+        /* або скільки треба */
+        overflow-y: auto;
+        padding-right: 10px;
+        margin-top: 16px;
+        mask-image: linear-gradient(to bottom, rgba(0, 0, 0, 1) 90%, transparent 100%);
+        -webkit-mask-image: linear-gradient(to bottom, rgba(0, 0, 0, 1) 90%, transparent 100%);
 }
 
 .search-list-wrapper::-webkit-scrollbar {
@@ -325,4 +330,8 @@ padding: 10px 20px;
 
 .search-list-wrapper::-webkit-scrollbar-track {
     background: transparent;
+}
+
+.search-list-wrapper {
+    scroll-behavior: smooth;
 }
