@@ -312,9 +312,10 @@ useEffect(() => {
             </form>
             {/*-----Відгуки-----*/}
             {activeLocation && activeLocation.reviews && (
-  <div className="reviews-wrapper">
+  
     <div className="reviews-list">
     <h3>Відгуки:</h3>
+    <div className="reviews-wrapper">
     {activeLocation.reviews.map((review) => (
       <div key={review.id} className="review-item">
         <div className="review-content">
