@@ -42,12 +42,17 @@ const MapPage = () => {
   const navigate = useNavigate();
   const [isAuthenticated, setIsAuthenticated] = useState(false);
   const [userData, setUserData] = useState(null);
-  const isDisabledUser = localStorage.getItem('isDisable') === 'true';
+  const [isDisabledUser, setIsDisabledUser] = useState(false);
   const [showEditForm, setShowEditForm] = useState(false);
 
 //-------------------
 
   
+
+useEffect(() => {
+  const value = localStorage.getItem('isDisable') === 'true';
+  setIsDisabledUser(value);
+}, []);
   //перевірка на автентифікацію
   useEffect(() => {
       // Перевірка, чи є автентифікація
