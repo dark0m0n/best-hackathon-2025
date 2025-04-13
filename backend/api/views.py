@@ -69,7 +69,7 @@ class LocationReviewViewSet(viewsets.ReadOnlyModelViewSet):
 @api_view(['GET'])
 def average_rating(request, location_id):
     avg = Review.objects.filter(location_id=location_id).aggregate(Avg('rating'))
-    return Response({'location_id': location_id, 'average_rating': avg['rating__avg']})
+    return Response({'location_id': location_id, 'average_rating': round(avg['rating__avg'], 2)})
 
 class RegisterView(APIView):
     def post(self, request):
