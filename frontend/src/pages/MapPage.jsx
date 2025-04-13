@@ -36,7 +36,9 @@ const MapPage = () => {
   const [routeInfo, setRouteInfo] = useState(null);
   const [activeLocation, setActiveLocation] = useState(null);
   const [showReviewForm, setShowReviewForm] = useState(false);
-const [reviewData, setReviewData] = useState({ rating: 0, comment: '' });
+  const [reviewData, setReviewData] = useState({ rating: 0, comment: '' });
+  const [isFormExpanded, setIsFormExpanded] = useState(false);
+
 
 
 
@@ -203,7 +205,7 @@ const [reviewData, setReviewData] = useState({ rating: 0, comment: '' });
   <div className="tags">
     {activeLocation.has_ramp && <span className="tag">Пандус</span>}
     {activeLocation.has_toilet && <span className="tag">Адаптований туалет</span>}
-    {activeLocation.has_tactile_elements && <span className="tag">Тактильна навігація</span>}
+    {activeLocation.has_tactile_elements && <span className="tag">Тактильні елементи</span>}
   </div>
 
   {activeLocation.average_rating && (
@@ -213,39 +215,37 @@ const [reviewData, setReviewData] = useState({ rating: 0, comment: '' });
   )}
 
   {/* ======= Форма для залишення відгуку ======= */}
-  {showReviewForm && (
-    <form onSubmit={handleReviewSubmit} className="review-form">
-      <label>
-        Оцінка (1-10):&nbsp;
-        <input
-          type="number"
-          value={reviewData.rating}
-          onChange={(e) =>
-            setReviewData({ ...reviewData, rating: e.target.value })
-          }
-          min="1"
-          max="10"
-          required
-        />
-      </label>
-      <br />
-      <textarea
-        placeholder="Ваш коментар"
-        value={reviewData.comment}
-        onChange={(e) =>
-          setReviewData({ ...reviewData, comment: e.target.value })
-        }
-        required
-      ></textarea>
-      <br />
-      <button type="submit">Надіслати відгук</button>
-    </form>
-  )}
-
-  {/* Кнопка для показу форми */}
-  {!showReviewForm && (
-    <button onClick={() => setShowReviewForm(true)}>Залишити відгук</button>
-  )}
+<form
+  onSubmit={handleReviewSubmit}
+  className={`review-form ${isFormExpanded ? 'expanded' : 'collapsed'}`}
+>
+  <label>
+    Оцінка (1-10):&nbsp;
+    <input
+      type="number"
+      value={reviewData.rating}
+      onFocus={() => setIsFormExpanded(true)}
+      onChange={(e) =>
+        setReviewData({ ...reviewData, rating: e.target.value })
+      }
+      min="1"
+      max="10"
+      required
+    />
+  </label>
+  <br />
+  <textarea
+    placeholder="Ваш коментар"
+    value={reviewData.comment}
+    onFocus={() => setIsFormExpanded(true)}
+    onChange={(e) =>
+      setReviewData({ ...reviewData, comment: e.target.value })
+    }
+    required
+  ></textarea>
+  <br />
+  <button type="submit" className='com-btn'>Надіслати відгук</button>
+</form>
 </div>
   ) : isSearching ? (
           <>
@@ -390,7 +390,7 @@ const [reviewData, setReviewData] = useState({ rating: 0, comment: '' });
                         checked={formData.has_tactile}
                         onChange={(e) => setFormData({ ...formData, has_tactile: e.target.checked })}
                       />
-                      Тактильна навігація
+                      Тактильні елементи
                     </label>
                   </li>
                 </ul>
