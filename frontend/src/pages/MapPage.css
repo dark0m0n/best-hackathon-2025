@@ -205,15 +205,8 @@ padding: 10px 20px;
     cursor: pointer;
 }
 
-.review-form.collapsed {
-    max-height: 100px;
-    overflow: hidden;
-    transition: max-height 0.3s ease;
-    opacity: 0.7;
-}
-
-.review-form.expanded {
-    max-height: 500px;
+.review-form{
+    max-height: 200px;
     overflow: hidden;
     /* або auto */
     transition: max-height 0.3s ease;
