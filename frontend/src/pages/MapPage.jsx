@@ -269,12 +269,13 @@ useEffect(() => {
 
   {activeLocation.average_rating && (
     <div className="average-rating">
-  <strong>
+  <strong /*style={{ color: getColor(review.rating) }}*/>
     <span style={{ color: getColor(activeLocation.average_rating) }}>
       {activeLocation.average_rating}
     </span>
     <span style={{ color: 'gray' }}> / </span>
-    <span style={{ color: 'green' }}>10</span>
+                  <span style={{ color: 'green' }}>10</span>
+                  {/*{review.rating} / 10*/}
   </strong>
 </div>
   )}
@@ -311,7 +312,8 @@ useEffect(() => {
             </form>
             {/*-----Відгуки-----*/}
             {activeLocation && activeLocation.reviews && (
-  <div className="reviews-list">
+  <div className="reviews-wrapper">
+    <div className="reviews-list">
     <h3>Відгуки:</h3>
     {activeLocation.reviews.map((review) => (
       <div key={review.id} className="review-item">
@@ -327,9 +329,14 @@ useEffect(() => {
           <div className="review-meta">
             <div
               className="review-item-rating"
-              style={{ color: getColor(review.rating) }}
+              /*style={{ color: getColor(review.rating) }}*/
             >
-              {review.rating} / 10
+              {/*{review.rating} / 10*/}
+              <span style={{ color: getColor(activeLocation.average_rating) }}>
+      {activeLocation.average_rating}
+    </span>
+    <span style={{ color: 'gray' }}> / </span>
+    <span style={{ color: 'green' }}>10</span>
             </div>
             <div className="review-item-date">
               {new Date(review.created_at).toLocaleDateString()}
@@ -339,8 +346,10 @@ useEffect(() => {
       </div>
     ))}
   </div>
+  </div>
 )}
 </div>
+
         ) : isSearching ? (
             //результати пошуку
           <>
@@ -350,7 +359,9 @@ useEffect(() => {
             }}>← Назад</button>
 
             <div className="search-results">
-              <h3 className='Search-list-title'>Результати пошуку:</h3>
+                <h3 className='Search-list-title'>Результати пошуку:</h3>
+                
+                <div className="search-list-wrapper">
               {filteredLocations.length === 0 ? (
                 <p className='Search-list-item'>Нічого не знайдено</p>
               ) : (
@@ -362,7 +373,8 @@ useEffect(() => {
                     </li>
                   ))}
                 </ul>
-              )}
+                  )}
+                  </div>
               <div className="filter-section">
                 <h3>Фільтри доступності</h3>
                     <ul className="location-filter-list">
