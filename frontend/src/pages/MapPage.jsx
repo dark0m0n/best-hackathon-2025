@@ -235,6 +235,13 @@ useEffect(() => {
   };
   //-------------------------
 
+  //колір рейтинга
+  const getColor = (rating) => {
+  if (rating >= 7) return 'green';
+  if (rating >= 4) return 'gold';
+  return 'red';
+};
+//----------------
  
   return (
     <div className="map-page-container">
@@ -246,8 +253,8 @@ useEffect(() => {
   <button onClick={() => setActiveLocation(null)} className="back-btn">
     ← Назад
   </button>
-  <h2>{activeLocation.name}</h2>
-  <p>{activeLocation.description}</p>
+  <h2 className='Select-location-name'>{activeLocation.name}</h2>
+  <p className='Select-location-desc'>{activeLocation.description}</p>
   <div className="tags">
   <div className="tag">
     {activeLocation.has_ramp ? '✅' : '❌'} Пандус
@@ -262,8 +269,14 @@ useEffect(() => {
 
   {activeLocation.average_rating && (
     <div className="average-rating">
-      <strong>Рейтинг: {activeLocation.average_rating} / 10</strong>
-    </div>
+  <strong>
+    <span style={{ color: getColor(activeLocation.average_rating) }}>
+      {activeLocation.average_rating}
+    </span>
+    <span style={{ color: 'gray' }}> / </span>
+    <span style={{ color: 'green' }}>10</span>
+  </strong>
+</div>
   )}
 
   {/* ======= Форма для залишення відгуку ======= */}
@@ -271,7 +284,7 @@ useEffect(() => {
   onSubmit={handleReviewSubmit}
   className={`review-form`}
 >
-  <label>
+  <label className='location-your-rating'>
     Оцінка (1-10):&nbsp;
     <input
       type="number"
@@ -285,7 +298,7 @@ useEffect(() => {
     />
   </label>
   <br />
-  <textarea
+  <textarea className='location-your-comment'
     placeholder="Ваш коментар"
     value={reviewData.comment}
     onChange={(e) =>
@@ -302,11 +315,27 @@ useEffect(() => {
     <h3>Відгуки:</h3>
     {activeLocation.reviews.map((review) => (
       <div key={review.id} className="review-item">
-        {/* <div><strong>{review.user.username}</strong></div> */}
-        <div>Оцінка: {review.rating} / 10</div>
-        <div>{review.comment}</div>
-        <div>Дата: {new Date(review.created_at).toLocaleDateString()}</div>
-        
+        <div className="review-content">
+          <div className="review-item-comment">
+            {/* 
+            <div className="review-item-username">
+              {review.username}
+            </div> 
+            */}
+            {review.comment}
+          </div>
+          <div className="review-meta">
+            <div
+              className="review-item-rating"
+              style={{ color: getColor(review.rating) }}
+            >
+              {review.rating} / 10
+            </div>
+            <div className="review-item-date">
+              {new Date(review.created_at).toLocaleDateString()}
+            </div>
+          </div>
+        </div>
       </div>
     ))}
   </div>
