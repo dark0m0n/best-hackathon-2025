@@ -1,0 +1,95 @@
+.auth-page {
+    max-width: 400px;
+    margin: 60px auto;
+    padding: 30px;
+    background-color: #ffffff;
+    border: 2px solid #007bff;
+    border-radius: 12px;
+    box-shadow: 0 8px 20px rgba(0, 123, 255, 0.15);
+    font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
+    color: #333;
+}
+
+.auth-page h2 {
+    text-align: center;
+    color: #007bff;
+    margin-bottom: 20px;
+}
+
+.auth-page form {
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    /* Центруємо по горизонталі */
+}
+
+.auth-page .form-group {
+    width: 100%;
+    max-width: 100%;
+    /* Фіксована ширина в межах .auth-page */
+    display: flex;
+    flex-direction: column;
+    margin-bottom: 15px;
+}
+
+.auth-page label {
+    font-size: 14px;
+}
+
+.auth-page input[type="text"],
+.auth-page input[type="email"],
+.auth-page input[type="password"] {
+    padding: 10px;
+    border: 1px solid #ccc;
+    border-radius: 6px;
+    font-size: 14px;
+    margin-top: 5px;
+    width: 100%;
+    /* Робить інпут на всю ширину form-group */
+    box-sizing: border-box;
+}
+
+.auth-page input[type="checkbox"] {
+    margin-right: 8px;
+}
+
+.auth-page button {
+    margin-top: 10px;
+    padding: 10px;
+    background-color: #007bff;
+    border: none;
+    color: white;
+    font-weight: bold;
+    border-radius: 6px;
+    cursor: pointer;
+    transition: background-color 0.3s ease;
+    width: 100%;
+    /* Щоб кнопка була на ширину інпутів */
+    max-width: 100%;
+}
+
+.auth-page button:hover {
+    background-color: #0056b3;
+}
+
+.auth-page .error-message {
+    color: red;
+    margin-bottom: 10px;
+    text-align: center;
+    width: 100%;
+}
+
+.auth-page p {
+    text-align: center;
+    margin-top: 15px;
+    font-size: 14px;
+}
+
+.auth-page a {
+    color: #007bff;
+    text-decoration: none;
+}
+
+.auth-page a:hover {
+    text-decoration: underline;
+}
