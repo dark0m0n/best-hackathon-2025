@@ -1,6 +1,6 @@
 from django.urls import path, include
 from rest_framework.routers import DefaultRouter
-from .views import LocationViewSet, ReviewViewSet, LocationReviewViewSet, average_rating
+from .views import LocationViewSet, ReviewViewSet, LocationReviewViewSet, average_rating, RegisterView
 
 router = DefaultRouter()
 router.register(r'locations', LocationViewSet)
@@ -10,4 +10,5 @@ router.register(r'location-reviews', LocationReviewViewSet, basename='location-r
 urlpatterns = [
     path('', include(router.urls)),
     path('average-rating/<int:location_id>/', average_rating),
+    path('register/', RegisterView.as_view(), name='register'),
 ]

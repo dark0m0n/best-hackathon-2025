@@ -1,6 +1,6 @@
 from rest_framework import viewsets
 from .models import Location, Review
-from .serializers import LocationSerializer, ReviewSerializer
+from .serializers import LocationSerializer, ReviewSerializer, RegisterSerializer
 from rest_framework.response import Response
 from rest_framework.decorators import action
 from rest_framework import status
@@ -8,6 +8,8 @@ from rest_framework import permissions
 from django.contrib.gis.geos import Point
 from rest_framework.decorators import api_view
 from django.db.models import Avg
+from rest_framework.views import APIView
+from rest_framework import status
 
 class LocationViewSet(viewsets.ModelViewSet):
     queryset = Location.objects.all()
@@ -66,3 +68,11 @@ class LocationReviewViewSet(viewsets.ReadOnlyModelViewSet):
 def average_rating(request, location_id):
     avg = Review.objects.filter(location_id=location_id).aggregate(Avg('rating'))
     return Response({'location_id': location_id, 'average_rating': avg['rating__avg']})
+
+class RegisterView(APIView):
+    def post(self, request):
+        serializer = RegisterSerializer(data=request.data)
+        if serializer.is_valid():
+            serializer.save()
+            return Response({'message': 'Користувач створений!'}, status=status.HTTP_201_CREATED)
+        return Response(serializer.errors, status=status.HTTP_400_BAD_REQUEST)

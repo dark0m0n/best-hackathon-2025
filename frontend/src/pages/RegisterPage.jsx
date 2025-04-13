@@ -5,9 +5,12 @@ import './AuthPage.css';
 const RegisterPage = () => {
   const [formData, setFormData] = useState({
     username: '',
+    first_name: '',
+    last_name: '',
     email: '',
     password: '',
     confirmPassword: '',
+    is_disable: false,
   });
 
   const [errorMessage, setErrorMessage] = useState('');
@@ -29,7 +32,7 @@ const RegisterPage = () => {
       return;
     }
 
-    fetch('/api/register/', {
+    fetch('http://localhost:8000/api/register/', {
       method: 'POST',
       headers: {
         'Content-Type': 'application/json',
@@ -38,6 +41,9 @@ const RegisterPage = () => {
         username: formData.username,
         email: formData.email,
         password: formData.password,
+        first_name: formData.first_name,
+        last_name: formData.last_name,
+        is_disable: formData.is_disable,
       }),
     })
       .then((response) => response.json())
@@ -60,6 +66,26 @@ const RegisterPage = () => {
       <form onSubmit={handleSubmit}>
         <label>
           Ім'я користувача
+          <input
+            type="text"
+            name="first_name"
+            value={formData.first_name}
+            onChange={handleChange}
+            required
+          />
+        </label>
+        <label>
+          Ім'я
+          <input
+            type="text"
+            name="last_name"
+            value={formData.last_name}
+            onChange={handleChange}
+            required
+          />
+        </label>
+        <label>
+          Прізвище
           <input
             type="text"
             name="username"
@@ -97,6 +123,15 @@ const RegisterPage = () => {
             onChange={handleChange}
             required
           />
+        </label>
+        <label>
+          <input 
+            type="checkbox"
+            name="is_disable"
+            value={formData.is_disable}
+            onChange={handleChange}
+          />
+          Ви є інвалідом?
         </label>
         <button type="submit">Зареєструватися</button>
       </form>
