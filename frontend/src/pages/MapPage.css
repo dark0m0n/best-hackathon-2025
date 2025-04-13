@@ -80,6 +80,15 @@ padding: 10px 20px;
         margin-left: 0;
 }
 
+.com-btn{
+    padding: 8px 16px;
+        border: none;
+        background-color: #2563eb;
+        color: white;
+        border-radius: 8px;
+        cursor: pointer;
+}
+
 .build-route-btn{
     padding: 8px 16px;
         border: none;
@@ -194,4 +203,18 @@ padding: 10px 20px;
     border-radius: 10px;
     padding: 10px;
     cursor: pointer;
+}
+
+.review-form.collapsed {
+    max-height: 40px;
+    overflow: hidden;
+    transition: max-height 0.3s ease;
+    opacity: 0.7;
+}
+
+.review-form.expanded {
+    max-height: 250px;
+    /* або auto */
+    transition: max-height 0.3s ease;
+    opacity: 1;
 }
