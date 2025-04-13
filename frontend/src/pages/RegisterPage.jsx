@@ -17,10 +17,10 @@ const RegisterPage = () => {
   const navigate = useNavigate();
 
   const handleChange = (e) => {
-    const { name, value } = e.target;
+    const { name, type, value, checked } = e.target;
     setFormData({
       ...formData,
-      [name]: value,
+      [name]: type === 'checkbox' ? checked : value,
     });
   };
 
@@ -55,6 +55,7 @@ const RegisterPage = () => {
         }
       })
       .catch((error) => {
+        console.error('Registration error:', error);
         setErrorMessage('Сталася помилка при реєстрації');
       });
   };
@@ -69,7 +70,7 @@ const RegisterPage = () => {
           <input
             type="text"
             name="username"
-            value={formData.first_name}
+            value={formData.username}
             onChange={handleChange}
             required
           />
@@ -79,7 +80,7 @@ const RegisterPage = () => {
           <input
             type="text"
             name="first_name"
-            value={formData.last_name}
+            value={formData.first_name}
             onChange={handleChange}
             required
           />
@@ -89,7 +90,7 @@ const RegisterPage = () => {
           <input
             type="text"
             name="last_name"
-            value={formData.username}
+            value={formData.last_name}
             onChange={handleChange}
             required
           />
@@ -128,7 +129,7 @@ const RegisterPage = () => {
           <input 
             type="checkbox"
             name="is_disable"
-            value={formData.is_disable}
+            checked={formData.is_disable}
             onChange={handleChange}
           />
           Ви є інвалідом?
