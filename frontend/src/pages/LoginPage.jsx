@@ -21,35 +21,37 @@ const LoginPage = () => {
 
   const handleSubmit = (e) => {
     e.preventDefault();
-  
-    fetch('http://localhost:8000/api/login/', {
+
+    fetch('/api/login/', {
       method: 'POST',
       headers: {
         'Content-Type': 'application/json',
       },
-      body: JSON.stringify(formData),
+      body: JSON.stringify({
+        username: formData.username,
+        password: formData.password,
+      }),
     })
-      .then((response) => {
-        if (!response.ok) {
-          throw new Error('Неправильний логін або пароль');
-        }
-        return response.json();
-      })
+      .then((response) => response.json())
       .then((data) => {
-        localStorage.setItem('authToken', data.token);
-        navigate('/');
+        if (data.token) {
+          localStorage.setItem('authToken', data.token); // зберігаємо токен
+          navigate('/'); // після успішного входу переходимо на головну сторінку
+        } else {
+          setErrorMessage(data.error || 'Щось пішло не так');
+        }
       })
       .catch((error) => {
-        setErrorMessage(error.message || 'Сталася помилка при вході');
+        setErrorMessage('Сталася помилка при вході');
       });
   };
-  
 
   return (
     <div className="auth-page">
       <h2>Вхід</h2>
       {errorMessage && <p className="error-message">{errorMessage}</p>}
       <form onSubmit={handleSubmit}>
+        <div class="form-group">
         <label>
           Ім'я користувача
           <input
@@ -59,7 +61,9 @@ const LoginPage = () => {
             onChange={handleChange}
             required
           />
-        </label>
+          </label>
+          </div>
+        <div class="form-group">
         <label>
           Пароль
           <input
@@ -70,6 +74,7 @@ const LoginPage = () => {
             required
           />
         </label>
+        </div>
         <button type="submit">Увійти</button>
       </form>
       <p>
