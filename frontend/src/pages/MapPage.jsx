@@ -42,6 +42,9 @@ const MapPage = () => {
   const navigate = useNavigate();
   const [isAuthenticated, setIsAuthenticated] = useState(false);
   const [userData, setUserData] = useState(null);
+  const isDisabledUser = localStorage.getItem('isDisable') === 'true';
+  const [showEditForm, setShowEditForm] = useState(false);
+
 //-------------------
 
   
@@ -139,6 +142,50 @@ useEffect(() => {
     setCenterLocation(null); // Скасовуємо фокус на попередню точку
   };
   //--------------
+
+  //редагування мітки
+  const handleEditClick = async () => {
+  if (!activeLocation || !newPosition) {
+    alert('Оберіть нову позицію на мапі!');
+    return;
+  }
+
+  const updatedData = {
+    name: formData.name || activeLocation.name,
+    description: formData.description || activeLocation.description,
+    has_ramp: formData.has_ramp,
+    has_adapted_toilet: formData.has_toilet,
+    has_tactile_elements: formData.has_tactile,
+    coordinates: `SRID=4326;POINT (${newPosition.lng} ${newPosition.lat})`,
+    category: activeLocation.category || 'default',
+  };
+
+  setLoading(true);
+
+  try {
+    await axios.put(`http://localhost:8000/api/locations/${activeLocation.id}/`, updatedData);
+    alert('Локацію оновлено!');
+
+    const res = await axios.get('http://localhost:8000/api/locations/');
+    setLocations(res.data);
+
+    setActiveLocation(null);
+    setNewPosition(null);
+    setFormData({
+      name: '',
+      description: '',
+      has_ramp: false,
+      has_toilet: false,
+      has_tactile: false,
+    });
+  } catch (error) {
+    console.error('Помилка при редагуванні локації:', error);
+    alert('Щось пішло не так при редагуванні.');
+  } finally {
+    setLoading(false);
+  }
+  };
+  //----------------------------------------------
 
   //додавання нової локаціїї
   const handleSubmit = async (e) => {
@@ -306,7 +353,76 @@ useEffect(() => {
   </strong>
 </div>
   )}
-
+  {isDisabledUser && (
+  <>
+    <button onClick={() => setShowEditForm(!showEditForm)}>
+      {showEditForm ? 'Скасувати редагування' : 'Редагувати'}
+    </button>
+    {showEditForm && (
+      <form className="location-form" onSubmit={(e) => {
+        e.preventDefault();
+        handleEditClick();
+      }}>
+        <input
+          className="location-name"
+          type="text"
+          name="name"
+          placeholder="Назва"
+          value={formData.name}
+          onChange={(e) => setFormData({ ...formData, name: e.target.value })}
+        />
+        <textarea
+          className="location-desc"
+          name="description"
+          placeholder="Опис"
+          value={formData.description}
+          onChange={(e) => setFormData({ ...formData, description: e.target.value })}
+        ></textarea>
+        <ul className="location-filter-list">
+          <li>
+            <label>
+              <input
+                type="checkbox"
+                checked={formData.has_ramp}
+                onChange={(e) =>
+                  setFormData({ ...formData, has_ramp: e.target.checked })
+                }
+              />
+              Є пандус
+            </label>
+          </li>
+          <li>
+            <label>
+              <input
+                type="checkbox"
+                checked={formData.has_toilet}
+                onChange={(e) =>
+                  setFormData({ ...formData, has_toilet: e.target.checked })
+                }
+              />
+              Адаптований туалет
+            </label>
+          </li>
+          <li>
+            <label>
+              <input
+                type="checkbox"
+                checked={formData.has_tactile}
+                onChange={(e) =>
+                  setFormData({ ...formData, has_tactile: e.target.checked })
+                }
+              />
+              Тактильні елементи
+            </label>
+          </li>
+        </ul>
+        <button type="submit" className="save-btn" disabled={loading}>
+          {loading ? 'Збереження...' : 'Зберегти зміни'}
+        </button>
+      </form>
+    )}
+  </>
+)}
   {/* ======= Форма для залишення відгуку ======= */}
 <form
   onSubmit={handleReviewSubmit}
@@ -360,8 +476,8 @@ useEffect(() => {
               /*style={{ color: getColor(review.rating) }}*/
             >
               {/*{review.rating} / 10*/}
-              <span style={{ color: getColor(review.rating) }}>
-      {review.rating}
+              <span style={{ color: getColor(activeLocation.average_rating) }}>
+      {activeLocation.average_rating}
     </span>
     <span style={{ color: 'gray' }}> / </span>
     <span style={{ color: 'green' }}>10</span>
@@ -374,8 +490,9 @@ useEffect(() => {
       </div>
     ))}
   </div>
-  </div>
-)}
+              </div>
+              
+            )}
 </div>
 
         ) : isSearching ? (
